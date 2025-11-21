@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # Datadog Agent
+  datadog-agent:
+    image: gcr.io/datadoghq/agent:7
+    container_name: dd-agent
+    environment:
+      # Core Configuration
+      - DD_API_KEY=${DD_API_KEY:-your_api_key_here}
+      - DD_SITE=${DD_SITE:-datadoghq.com}
+      - DD_ENV=sit
+      
+      # APM Configuration
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      - DD_APM_RECEIVER_SOCKET=/var/run/datadog/apm.socket
+      
+      # DogStatsD Configuration
+      - DD_DOGSTATSD_SOCKET=/var/run/datadog/dsd.socket
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      
+      # Profiling
+      - DD_PROFILING_ENABLED=auto
+      
+      # Logs Configuration
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_AUTO_MULTI_LINE_DETECTION=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_CONTAINER_EXCLUDE_LOGS=name:dd-agent
+    volumes:
+      - /var/run/datadog:/var/run/datadog
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # .NET 8 API Service
+  dotnet-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dotnet-api-sample
+    ports:
+      - "5000:5000"
+    environment:
+      # Application Configuration
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      
+      # Datadog Configuration
+      - DD_AGENT_HOST=dd-agent
+      - DD_TRACE_AGENT_URL=unix:///var/run/datadog/apm.socket
+      - DD_DOGSTATSD_URL=unix:///var/run/datadog/dsd.socket
+      - DD_ENV=sit
+      - DD_SERVICE=dotnet-api-sample
+      - DD_VERSION=1.0.0
+      - DD_LOGS_INJECTION=true
+      - DD_TRACE_ENABLED=true
+      - DD_PROFILING_ENABLED=true
+      
+      # Optional: Runtime metrics
+      - DD_RUNTIME_METRICS_ENABLED=true
+    volumes:
+      - /var/run/datadog:/var/run/datadog
+    depends_on:
+      - datadog-agent
+    restart: unless-stopped
+    labels:
+      # Datadog labels for log collection
+      com.datadoghq.ad.logs: '[{"source":"csharp","service":"dotnet-api-sample"}]'
+      com.datadoghq.tags.env: "sit"
+      com.datadoghq.tags.service: "dotnet-api-sample"
+      com.datadoghq.tags.version: "1.0.0"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  app-network:
+    driver: bridge
+

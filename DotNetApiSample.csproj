@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RootNamespace>DotNetApiSample</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+  </ItemGroup>
+
+  <!-- Optional: Add Datadog APM for .NET -->
+  <!-- Uncomment to enable Datadog tracing -->
+  <!--
+  <ItemGroup>
+    <PackageReference Include="Datadog.Trace" Version="2.49.0" />
+  </ItemGroup>
+  -->
+
+</Project>
+
