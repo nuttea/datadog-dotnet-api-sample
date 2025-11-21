@@ -397,6 +397,52 @@ For issues related to:
 - **Docker**: Check Docker documentation
 - **Datadog**: Check Datadog support or documentation
 
+## Reference Test Environment
+
+### docker version
+Client: Docker Engine - Community
+ Version:           24.0.7
+ API version:       1.43
+ Go version:        go1.20.10
+ Git commit:        afdd53b
+ Built:             Thu Oct 26 09:07:41 2023
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          24.0.7
+  API version:      1.43 (minimum version 1.12)
+  Go version:       go1.20.10
+  Git commit:       311b9ff
+  Built:            Thu Oct 26 09:07:41 2023
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          v2.1.5
+  GitCommit:        fcd43222d6b07379a4be9786bda52438f0dd16a1
+ dd-shim:
+  Version:          v0.0.1
+  GitCommit:        
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+
+### ls -al /opt/datadog-packages/
+total 68
+drwxrwxrwx 11 root docker  4096 Nov 21 07:09 .
+drwxr-xr-x  6 root root    4096 Nov 21 07:09 ..
+drwxr-xr-x  3 root root    4096 Nov 21 07:08 datadog-apm-inject
+drwxr-xr-x  3 root root    4096 Nov 21 07:09 datadog-apm-library-dotnet
+drwxr-xr-x  3 root root    4096 Nov 21 07:08 datadog-apm-library-java
+drwxr-xr-x  3 root root    4096 Nov 21 07:08 datadog-apm-library-js
+drwxr-xr-x  3 root root    4096 Nov 21 07:09 datadog-apm-library-php
+drwxr-xr-x  3 root root    4096 Nov 21 07:08 datadog-apm-library-python
+drwxr-xr-x  3 root root    4096 Nov 21 07:08 datadog-apm-library-ruby
+-rw-r--r--  1 root root   32768 Nov 21 07:09 packages.db
+drwxr-xr-x  2 root root    4096 Nov 21 07:09 run
+drwxrwxrwx  2 root docker  4096 Nov 21 07:09 tmp
+
 ---
 
 **Created**: November 21, 2025  
