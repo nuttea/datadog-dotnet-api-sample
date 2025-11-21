@@ -89,6 +89,6 @@ echo "You can also test interactively at:"
 echo "  - Swagger UI: $BASE_URL/swagger"
 echo ""
 echo "View logs with:"
-echo "  docker-compose logs -f dotnet-api"
+echo "  docker compose logs -f dotnet-api"
 echo ""
 

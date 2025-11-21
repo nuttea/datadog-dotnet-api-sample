@@ -43,7 +43,7 @@ echo "Building and starting services..."
 echo ""
 
 # Build and start
-docker-compose up -d --build
+docker compose up -d --build
 
 echo ""
 echo -e "${GREEN}✅ Services started successfully!${NC}"
@@ -59,9 +59,9 @@ echo ""
 echo "======================================"
 echo " Useful Commands"
 echo "======================================"
-echo "View logs:           docker-compose logs -f"
-echo "Stop services:       docker-compose down"
-echo "Restart API:         docker-compose restart dotnet-api"
+echo "View logs:           docker compose logs -f"
+echo "Stop services:       docker compose down"
+echo "Restart API:         docker compose restart dotnet-api"
 echo "Check health:        curl http://localhost:5000/health"
 echo "Test API:            ./test.sh"
 echo ""
