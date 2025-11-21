@@ -5,7 +5,7 @@ WORKDIR /src
 
 # Copy csproj and restore dependencies
 COPY *.csproj ./
-RUN dotnet restore
+RUN dotnet restore --runtime linux-musl-x64
 
 # Copy everything else and build
 COPY . ./
