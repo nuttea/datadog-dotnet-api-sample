@@ -37,6 +37,10 @@ dotnet-api-sample/
 - Docker 24.0.7+ (or compatible version)
 - Docker Compose 3.8+
 - .NET 8 SDK (for local development only)
+- Install Datadog Packages without install agent yet. (Datadog Agent will run as a docker container in docker-compose file)
+  ```
+  DD_PROFILING_ENABLED=auto DD_APM_INSTRUMENTATION_LIBRARIES=java:1,python:3,js:5,php:1,dotnet:3,ruby:2 DD_APM_INSTRUMENTATION_ENABLED=docker DD_NO_AGENT_INSTALL=true bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+  ```
 
 ## Quick Start
 
@@ -351,10 +355,6 @@ avg:trace.aspnet_core.request.duration{env:sit,service:dotnet-api-sample}
 # GC collections
 sum:runtime.dotnet.gc.count{env:sit,service:dotnet-api-sample}.as_count()
 ```
-
-## Kubernetes Deployment (Optional)
-
-If deploying to Kubernetes, see the Datadog Operator documentation for automatic injection of APM libraries.
 
 ## Security Best Practices
 
