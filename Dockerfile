@@ -26,6 +26,20 @@ RUN addgroup -g 1000 appuser && \
     adduser -u 1000 -G appuser -s /bin/sh -D appuser && \
     chown -R appuser:appuser /app
 
+# Download and install the Tracer
+RUN mkdir -p /opt/datadog \
+    && mkdir -p /var/log/datadog \
+    && TRACER_VERSION=$(curl -s https://api.github.com/repos/DataDog/dd-trace-dotnet/releases/latest | grep tag_name | cut -d '"' -f 4 | cut -c2-) \
+    && curl -LO https://github.com/DataDog/dd-trace-dotnet/releases/download/v${TRACER_VERSION}/datadog-dotnet-apm-${TRACER_VERSION}-musl.tar.gz \
+    && tar -C /opt/datadog -xzf datadog-dotnet-apm-${TRACER_VERSION}-musl.tar.gz && sh /opt/datadog/createLogPath.sh \
+    && rm ./datadog-dotnet-apm-${TRACER_VERSION}-musl.tar.gz
+
+# Enable the tracer
+ENV CORECLR_ENABLE_PROFILING=1
+ENV CORECLR_PROFILER={846F5F1C-F9AE-4B07-969E-05C26BC060D8}
+ENV CORECLR_PROFILER_PATH=/opt/datadog/Datadog.Trace.ClrProfiler.Native.so
+ENV DD_DOTNET_TRACER_HOME=/opt/datadog
+
 # Copy published app from build stage
 COPY --from=build /app/publish .
 

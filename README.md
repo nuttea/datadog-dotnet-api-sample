@@ -449,3 +449,5 @@ drwxrwxrwx  2 root docker  4096 Nov 21 07:09 tmp
 **Last Updated**: November 21, 2025  
 **Version**: 1.0.0
 
+## APM Manual Method for dotnet
+

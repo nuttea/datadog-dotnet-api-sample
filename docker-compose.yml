@@ -3,11 +3,13 @@ services:
   datadog-agent:
     image: gcr.io/datadoghq/agent:7
     container_name: dd-agent
+    ports:
+      - "8126:8126"
     environment:
       # Core Configuration
       - DD_API_KEY=${DD_API_KEY:-your_api_key_here}
       - DD_SITE=${DD_SITE:-datadoghq.com}
-      - DD_ENV=sit
+      - DD_ENV=${DD_ENV:-dev}
       
       # APM Configuration
       - DD_APM_ENABLED=true
@@ -34,8 +36,6 @@ services:
       - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
     restart: unless-stopped
-    networks:
-      - app-network
 
   # .NET 8 API Service
   dotnet-api:
@@ -51,12 +51,13 @@ services:
       - ASPNETCORE_URLS=http://+:5000
       
       # Datadog Configuration
-      - DD_AGENT_HOST=dd-agent
       - DD_TRACE_AGENT_URL=unix:///var/run/datadog/apm.socket
       - DD_DOGSTATSD_URL=unix:///var/run/datadog/dsd.socket
-      - DD_ENV=sit
+      - DD_ENV=${DD_ENV:-dev}
       - DD_SERVICE=dotnet-api-sample
       - DD_VERSION=1.0.0
+      - DD_GIT_COMMIT_SHA=${DD_GIT_COMMIT_SHA}
+      - DD_GIT_REPOSITORY_URL="github.com/nuttea/datadog-dotnet-api-sample
       - DD_LOGS_INJECTION=true
       - DD_TRACE_ENABLED=true
       - DD_PROFILING_ENABLED=true
@@ -71,19 +72,12 @@ services:
     labels:
       # Datadog labels for log collection
       com.datadoghq.ad.logs: '[{"source":"csharp","service":"dotnet-api-sample"}]'
-      com.datadoghq.tags.env: "sit"
+      com.datadoghq.tags.env: "${DD_ENV:-dev}"
       com.datadoghq.tags.service: "dotnet-api-sample"
       com.datadoghq.tags.version: "1.0.0"
-    networks:
-      - app-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 10s
-
-networks:
-  app-network:
-    driver: bridge
-
